@@ -1,0 +1,27 @@
+{
+  "name": "part3",
+  "version": "1.0.0",
+  "description": "\"fullstackopen part 3\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Strife-01/fullstackopen_part3.git"
+  },
+  "author": "strife",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Strife-01/fullstackopen_part3/issues"
+  },
+  "homepage": "https://github.com/Strife-01/fullstackopen_part3#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}

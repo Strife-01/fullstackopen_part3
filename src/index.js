@@ -1,0 +1,79 @@
+const express = require('express')
+const app = express()
+const PORT = 3001
+
+app.use(express.json());
+
+let persons = [
+    { 
+      "id": "1",
+      "name": "Arto Hellas", 
+      "number": "040-123456"
+    },
+    { 
+      "id": "2",
+      "name": "Ada Lovelace", 
+      "number": "39-44-5323523"
+    },
+    { 
+      "id": "3",
+      "name": "Dan Abramov", 
+      "number": "12-43-234345"
+    },
+    { 
+      "id": "4",
+      "name": "Mary Poppendieck", 
+      "number": "39-23-6423122"
+    }
+]
+
+function getRandomId(max = 10000000000000) {
+  return Math.floor(Math.random() * max);
+}
+
+app.get('/api/persons', (req, res) => {
+  res.json(persons);
+})
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = req.params.id;
+  const person = persons.find(person => person.id === id)
+  if (person) {
+    res.json(person)
+  } else {
+    res.status(404).send("<h1>404 Not Found</h1>")
+  }
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = req.params.id
+  persons = persons.filter(person => person.id != id)
+  res.status(204).send(`data has been deleted`);
+})
+
+app.get('/info', (req, res) => {
+  res.send(
+    `<p>Phonebook has info for ${persons.length} people.</p><br/>${new Date().toString()}`
+  )
+})
+
+app.post('/api/persons', (req, res) => {
+  let person = {}
+  person.id = String(getRandomId())
+  person.name = req.body.name
+  person.number = req.body.number
+
+  if (person.name === undefined || person.number === undefined) {
+    return res.status(400).send("<h1>The number needs to contain both phone and name.</h1>")
+  }
+
+  if (persons.find(p => p.name === person.name)) {
+    return res.status(400).json({error: 'name must be unique'})
+    //return res.status(400).send(`<h1>The name ${person.name} is already in the list.</h1>`)
+  }
+
+  persons = persons.concat(person)
+  res.send(`<h1>${person.name} is now in the list</h1>`)
+})
+
+app.listen(PORT, () => `app is found on http://localhost:${PORT}`)
