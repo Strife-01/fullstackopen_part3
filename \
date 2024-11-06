@@ -4,8 +4,8 @@ const app = express()
 const PORT = 3001
 
 app.use(express.json());
-morgan.token('post_content', function (req, res) { return req.method == 'POST' ? JSON.stringify(req.body) : ' ' })
-app.use(morgan(':method :url :status :response-time - ms :post_content'));
+morgan.token('post_content', function (req, res) { req.method == 'POST' ? return req.body : return '' })
+app.use(morgan(':method :url :status :response-time ms - :post_content'));
 
 let persons = [
     { 
