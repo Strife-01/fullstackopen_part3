@@ -1,8 +1,10 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 const PORT = 3001
 
 app.use(express.json());
+app.use(morgan('tiny'));
 
 let persons = [
     { 
@@ -75,5 +77,12 @@ app.post('/api/persons', (req, res) => {
   persons = persons.concat(person)
   res.send(`<h1>${person.name} is now in the list</h1>`)
 })
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).json({ error: 'unknown endpoint' })
+}
+
+// middleware
+app.use(unknownEndpoint)
 
 app.listen(PORT, () => `app is found on http://localhost:${PORT}`)
