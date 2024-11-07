@@ -1,8 +1,11 @@
+const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const PORT = 3001
 
+app.use(cors())
+app.use(express.static('dist'))
 app.use(express.json());
 morgan.token('post_content', function (req, res) { return req.method == 'POST' ? JSON.stringify(req.body) : ' ' })
 app.use(morgan(':method :url :status :response-time - ms :post_content'));
