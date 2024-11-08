@@ -1,7 +1,9 @@
+require('dotenv').config()
 const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const Note = require('./mongo/models/person.js')
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
@@ -10,6 +12,7 @@ app.use(express.json());
 morgan.token('post_content', function (req, res) { return req.method == 'POST' ? JSON.stringify(req.body) : ' ' })
 app.use(morgan(':method :url :status :response-time - ms :post_content'));
 
+/*
 let persons = [
     { 
       "id": "1",
@@ -31,26 +34,27 @@ let persons = [
       "name": "Mary Poppendieck", 
       "number": "39-23-6423122"
     }
-]
+]*/
 
 function getRandomId(max = 10000000000000) {
   return Math.floor(Math.random() * max);
 }
 
 app.get('/api/persons', (req, res) => {
-  res.json(persons);
+  Note.find({}).then(persons => res.json(persons))
 })
 
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id;
-  const person = persons.find(person => person.id === id)
+  Note.find({id: id}).then(person => res.json(person))
+  /*
   if (person) {
     res.json(person)
   } else {
     res.status(404).send("<h1>404 Not Found</h1>")
-  }
+  }*/
 })
-
+/*
 app.delete('/api/persons/:id', (req, res) => {
   const id = req.params.id
   persons = persons.filter(person => person.id != id)
@@ -81,6 +85,8 @@ app.post('/api/persons', (req, res) => {
   persons = persons.concat(person)
   res.send(`<h1>${person.name} is now in the list</h1>`)
 })
+
+*/
 
 const unknownEndpoint = (request, response) => {
   response.status(404).json({ error: 'unknown endpoint' })
