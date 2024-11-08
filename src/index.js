@@ -3,7 +3,7 @@ const cors = require('cors');
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
-const Person = require('./mongo/models/person.js');
+const Person = require('./models/person.js');
 const PORT = process.env.PORT || 3001;
 
 morgan.token('post_content', function (req, res) { return req.method == 'POST' ? JSON.stringify(req.body) : ' ' });
@@ -47,7 +47,7 @@ app.get('/info', (req, res) => {
   Person
     .find({})
     .then(result => {
-      res.send(`${typeof(result)}`)
+      res.send(`${result}`)
     })
   //res.send(
   //  `<p>Phonebook has info for ${persons.length} people.</p><br/>${new Date().toString()}`
