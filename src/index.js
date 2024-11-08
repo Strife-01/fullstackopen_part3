@@ -72,7 +72,7 @@ app.post('/api/persons', (req, res) => {
   const name = req.body.name
   const number = req.body.number
 
-  if (person.name === undefined || person.number === undefined) {
+  if (name === undefined || number === undefined) {
     return res.status(400).send("<h1>The number needs to contain both phone and name.</h1>")
   }
 
@@ -85,7 +85,7 @@ app.post('/api/persons', (req, res) => {
   const p = new Person({
     name: name,
     number: number,
-  }).save().then(result => res.send(`<h1>${person.name} is now in the list</h1>`))
+  }).save().then(result => res.send(`<h1>${name} is now in the list</h1>`))
 })
 
 const unknownEndpoint = (request, response) => {
