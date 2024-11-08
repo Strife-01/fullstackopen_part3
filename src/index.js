@@ -3,7 +3,7 @@ const cors = require('cors')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
-const Note = require('./mongo/models/person.js')
+const Person = require('./mongo/models/person.js')
 const PORT = process.env.PORT || 3001
 
 app.use(cors())
@@ -41,12 +41,12 @@ function getRandomId(max = 10000000000000) {
 }
 
 app.get('/api/persons', (req, res) => {
-  Note.find({}).then(persons => res.json(persons))
+  Person.find({}).then(persons => res.json(persons))
 })
 
 app.get('/api/persons/:id', (req, res) => {
   const id = req.params.id;
-  Note.find({id: id}).then(person => res.json(person))
+  Person.findById(id).then(person => res.json(person))
   /*
   if (person) {
     res.json(person)
@@ -66,10 +66,10 @@ app.get('/info', (req, res) => {
     `<p>Phonebook has info for ${persons.length} people.</p><br/>${new Date().toString()}`
   )
 })
+*/
 
 app.post('/api/persons', (req, res) => {
   let person = {}
-  person.id = String(getRandomId())
   person.name = req.body.name
   person.number = req.body.number
 
@@ -77,16 +77,17 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).send("<h1>The number needs to contain both phone and name.</h1>")
   }
 
+  /*
   if (persons.find(p => p.name === person.name)) {
     return res.status(400).json({error: 'name must be unique'})
     //return res.status(400).send(`<h1>The name ${person.name} is already in the list.</h1>`)
   }
-
-  persons = persons.concat(person)
-  res.send(`<h1>${person.name} is now in the list</h1>`)
+  */
+  const p = new Person({
+    name: person.name,
+    number: person.number,
+  }).save().then(result => res.send(`<h1>${person.name} is now in the list</h1>`))
 })
-
-*/
 
 const unknownEndpoint = (request, response) => {
   response.status(404).json({ error: 'unknown endpoint' })
