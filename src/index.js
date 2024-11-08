@@ -43,22 +43,35 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error));
 });
 
-app.get('/info', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id;
+  const data = req.body;
+  Person
+    .findByIdAndUpdate(id, data)
+    .then(result => {
+      result.name = data.name;
+      result.number = data.number;
+      res
+        .status(201)
+        .json(result);
+    })
+    .catch(error => next(error));
+});
+
+app.get('/info', (req, res, next) => {
   Person
     .find({})
     .then(result => {
-      res.send(`${result}`)
+      res.send(`<p>Phonebook has info for ${result.length} people.</p><br/>${new Date().toString()}`);
     })
-  //res.send(
-  //  `<p>Phonebook has info for ${persons.length} people.</p><br/>${new Date().toString()}`
-  //)
+    .catch(error => next(error));
 });
 
 app.post('/api/persons', (req, res, next) => {
   const name = req.body.name;
   const number = req.body.number;
 
-  if (name == false || number == false) {
+  if (name === '' || number === '') {
     return res
       .status(400)
       .send("<h1>The number needs to contain both phone and name.</h1>");
@@ -66,18 +79,18 @@ app.post('/api/persons', (req, res, next) => {
     Person
       .find({name: name})
       .then(result => {
-        if (result != null) {
+        if (result.length != 0) {
           return res
             .status(400)
             .send(`<h1>The name ${name} is already in the list.</h1>`);
         } else {
           const person = new Person({
             name: name,
-            number: number,
+            number: number
           });
           person
             .save()
-            .then(result => res.send(`<h1>${name} is now in the list</h1>`))
+            .then(result => res.status(201).send(result))
             .catch(error => next(error));
         }
       })
